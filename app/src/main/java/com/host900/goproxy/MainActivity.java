@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.net.Inet4Address;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     String TAG = "HomeFragment";
-    ArrayList<String> serviceIDs = new ArrayList();
+    ArrayList<String> serviceIDs = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         String sdkVersion = Proxysdk.version();
         TextView viewManual = findViewById(R.id.view_manual);
         TextView joinQQ = findViewById(R.id.join_qq_group);
-        Log.d(TAG,Proxysdk.version());
+        Log.d(TAG, Proxysdk.version());
         ipaddrs.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -82,8 +83,11 @@ public class MainActivity extends AppCompatActivity {
         viewManual.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         viewManual.getPaint().setAntiAlias(true);//抗锯齿
 
-        getSupportActionBar().setTitle(getString(R.string.apptitle));
-        tip.setText(getString(R.string.hint0) +" "+ sdkVersion +" "+ getString(R.string.hint1));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(getString(R.string.apptitle));
+        }
+        tip.setText(getString(R.string.hint0) + " " + sdkVersion + " " + getString(R.string.hint1));
         ipaddrs.setText(getIpAddress(getBaseContext()));
 
         joinQQ.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
@@ -98,21 +102,21 @@ public class MainActivity extends AppCompatActivity {
         return;
     }
 
-    public View.OnClickListener stop(final  Context ctx) {
+    public View.OnClickListener stop(final Context ctx) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService(ctx,true);
+                stopService(ctx, true);
             }
         };
     }
 
-    private void stopService(Context ctx,boolean show) {
+    private void stopService(Context ctx, boolean show) {
         for (String serviceID : serviceIDs) {
             Proxysdk.stop(serviceID);
         }
         serviceIDs.clear();
-        if (show){
+        if (show) {
             Toast.makeText(ctx, R.string.stopdone, Toast.LENGTH_LONG).show();
         }
     }
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService(ctx,false);
+                stopService(ctx, false);
                 String[] lines = editText.getText().toString().trim().split("\n");
                 boolean isEmpty = true;
                 for (int i = 0; i < lines.length; i++) {
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopService(this,false);
+        stopService(this, false);
     }
 
     public TextWatcher watcher(final SharedPreferences.Editor editor, final EditText editText) {
